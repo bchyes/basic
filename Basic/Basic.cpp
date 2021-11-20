@@ -23,6 +23,8 @@ using namespace std;
 
 void processLine(string line, Program &program, EvalState &state);
 
+void help();
+
 /* Main program */
 
 int main() {
@@ -66,21 +68,6 @@ void processLine(string line, Program &program, EvalState &state) {
             flag = -1;
             line = line.substr(1);
         }
-        /*scanner.setInput(line);
-        Expression *exp = parseExp(scanner);
-        ExpressionType type = exp->getType();
-        if (type != CONSTANT) {
-            cout << "INVALID NUMBER" << "\n";
-            cout << " ? ";
-            return;
-        }
-        if (!(((ConstantExp *) exp)->getValue())) {
-            if (((ConstantExp *) exp)->getDecimal()) {
-                cout << "INVALID NUMBER" << "\n";
-                cout << " ? ";
-                return;
-            }
-        }*/
         for (int i = 0; i < line.length(); i++) {
             if (line[i] < '0' || line[i] > '9') {
                 cout << "INVALID NUMBER" << "\n";
@@ -100,8 +87,6 @@ void processLine(string line, Program &program, EvalState &state) {
     TokenType type = scanner.getTokenType(token);
     int numbertaken = 0;
     if (type == NUMBER) {
-        //Statement *stat = new NumberedState(stringToInteger(token));
-        //stat->execute(state);
         numbertaken = stringToInteger(token);
         if (!scanner.hasMoreTokens()) {
             program.removeSourceLine(numbertaken);
@@ -110,16 +95,13 @@ void processLine(string line, Program &program, EvalState &state) {
         line = line.substr(token.length() + 1);
         token = scanner.nextToken();
     }
-    //if (type == WORD)
-    //Statement *stat= new WordState(token, numbertaken, line);
-    //if (!numbertaken) stat->execute(state, program);
     if (numbertaken)
         program.addSourceLine(numbertaken, line);
     else {
         if (token == "QUIT") {
             exit(0);
         } else if (token == "HELP") {
-
+            help();
         } else if (token == "CLEAR") {
             program.clear();
             state.clear();
@@ -127,8 +109,6 @@ void processLine(string line, Program &program, EvalState &state) {
             program.Run(state);
         } else if (token == "LIST") {
             program.ListLine();
-        } else if (token == "REM") {
-
         } else if (token == "LET") {
             Expression *exp = parseExp(scanner);
             exp->eval(state);
@@ -140,7 +120,7 @@ void processLine(string line, Program &program, EvalState &state) {
         } else if (token == "PRINT") {
             Expression *exp = parseExp(scanner);
             int value = exp->eval(state);
-            if (exp->getType()==IDENTIFIER)
+            if (exp->getType() == IDENTIFIER)
                 if (((IdentifierExp *) exp)->getDefined()) {
                     cout << "VARIABLE NOT DEFINED" << "\n";
                     return;
@@ -159,10 +139,12 @@ void processLine(string line, Program &program, EvalState &state) {
             cout << " ? ";
         }
     }
-
-    /*Expression *exp = parseExp(scanner);
-    int value = exp->eval(state);
-    cout << value << endl;
-    delete exp;*/
 }
-//
+
+void help() {
+    printf(
+    "this interpreter process the operation without line number in the processline\n"
+    "and it store the line number and its information in the project which contains a map in it\n"
+    "it store the line number as key and information as value and we use iterator to process the every line operation"
+    );
+}

@@ -85,10 +85,7 @@ void Program::Run(EvalState &state) {
         scan.scanNumbers();
         scan.setInput(infor.line);
         string op = scan.nextToken();
-        if (op == "REM") {
-            //infor.line.substr(4);
-            //cout<<infor.line<<"\n";
-        } else if (op == "LET") {
+        if (op == "LET") {
             Expression *exp = parseExp(scan);
             exp->eval(state);
             if (exp->getType() == COMPOUND)

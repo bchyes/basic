@@ -138,14 +138,27 @@ public:
  */
 
     int getNextLineNumber(int lineNumber);
+/*
+ * Method: ListLine
+ * Usage: program.ListLine();
+ * ------------------------------------------------------------
+ * print the every line message
+ */
     void ListLine();
+
+ /*
+ * Method: Run
+ * Usage: program.Run();
+ * ------------------------------------------------------------
+ * execute the every line and its operation
+ */
     void Run(EvalState &state);
 private:
 struct Information{
     string line;
 };
 // Fill this in with whatever types and instance variables you need
-map<int,Information> line_information;
+map<int,Information> line_information; //use for storage line and its information
 map<int,Information>::iterator it;
 
 };

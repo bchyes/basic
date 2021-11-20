@@ -6,6 +6,28 @@
 
 #IncludeRegexTransform: 
 
+/mnt/c/Users/25693/Desktop/BASIC-Interpreter-main/Basic/Basic.cpp
+cctype
+-
+iostream
+-
+string
+-
+exp.h
+/mnt/c/Users/25693/Desktop/BASIC-Interpreter-main/Basic/exp.h
+parser.h
+/mnt/c/Users/25693/Desktop/BASIC-Interpreter-main/Basic/parser.h
+program.h
+/mnt/c/Users/25693/Desktop/BASIC-Interpreter-main/Basic/program.h
+../StanfordCPPLib/error.h
+/mnt/c/Users/25693/Desktop/BASIC-Interpreter-main/StanfordCPPLib/error.h
+../StanfordCPPLib/tokenscanner.h
+/mnt/c/Users/25693/Desktop/BASIC-Interpreter-main/StanfordCPPLib/tokenscanner.h
+../StanfordCPPLib/simpio.h
+/mnt/c/Users/25693/Desktop/BASIC-Interpreter-main/StanfordCPPLib/simpio.h
+../StanfordCPPLib/strlib.h
+/mnt/c/Users/25693/Desktop/BASIC-Interpreter-main/StanfordCPPLib/strlib.h
+
 /mnt/c/Users/25693/Desktop/BASIC-Interpreter-main/Basic/evalstate.h
 string
 -
@@ -48,6 +70,12 @@ evalstate.h
 map
 -
 
+/mnt/c/Users/25693/Desktop/BASIC-Interpreter-main/Basic/statement.cpp
+string
+-
+statement.h
+/mnt/c/Users/25693/Desktop/BASIC-Interpreter-main/Basic/statement.h
+
 /mnt/c/Users/25693/Desktop/BASIC-Interpreter-main/Basic/statement.h
 program.h
 /mnt/c/Users/25693/Desktop/BASIC-Interpreter-main/Basic/program.h
@@ -55,6 +83,14 @@ evalstate.h
 /mnt/c/Users/25693/Desktop/BASIC-Interpreter-main/Basic/evalstate.h
 exp.h
 /mnt/c/Users/25693/Desktop/BASIC-Interpreter-main/Basic/exp.h
+
+/mnt/c/Users/25693/Desktop/BASIC-Interpreter-main/StanfordCPPLib/error.h
+string
+-
+exception
+-
+private/main.h
+/mnt/c/Users/25693/Desktop/BASIC-Interpreter-main/StanfordCPPLib/private/main.h
 
 /mnt/c/Users/25693/Desktop/BASIC-Interpreter-main/StanfordCPPLib/foreach.h
 iterator
@@ -79,6 +115,8 @@ foreach.h
 /mnt/c/Users/25693/Desktop/BASIC-Interpreter-main/StanfordCPPLib/foreach.h
 stack.h
 /mnt/c/Users/25693/Desktop/BASIC-Interpreter-main/StanfordCPPLib/stack.h
+
+/mnt/c/Users/25693/Desktop/BASIC-Interpreter-main/StanfordCPPLib/private/main.h
 
 /mnt/c/Users/25693/Desktop/BASIC-Interpreter-main/StanfordCPPLib/private/tokenpatch.h
 

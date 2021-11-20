@@ -118,7 +118,7 @@ public:
  * to the given value.
  */
 
-    ConstantExp(int value,bool dec);
+    ConstantExp(int value, bool dec);
 
 /*
  * Prototypes for the virtual methods
@@ -142,11 +142,18 @@ public:
  */
 
     int getValue();
+/*
+ * Method: getDecimal
+ * Usage: bool dec = ((ConstantExp *) exp)->getDecimal();
+ * -----------------------------------------------------
+ * returns whether the Constant is decimal
+ */
     bool getDecimal();
+
 private:
 
     int value;
-    bool decimal=0;
+    bool decimal = 0;
 };
 
 /*
@@ -181,7 +188,7 @@ public:
     virtual std::string toString();
 
     virtual ExpressionType getType();
-    bool getDefined();
+
 /*
  * Method: getName
  * Usage: string name = ((IdentifierExp *) exp)->getName();
@@ -192,10 +199,18 @@ public:
 
     std::string getName();
 
+/*
+ * Method: getDefined
+ * Usage: bool defined=((IdentifierExp *) exp)->getDefined();
+ * ------------------------------------------------------------
+ * Returns whether the Identifier is defined
+ */
+    bool getDefined();
+
 private:
 
     std::string name;
-    bool identifier_defined=0;
+    bool identifier_defined = 0;
 };
 
 /*
@@ -251,17 +266,35 @@ public:
 
     Expression *getRHS();
 
-
+/*
+ * Method: getDivided
+ * Usage: bool divided=((IdentifierExp *) exp)->getDivided();
+ * ------------------------------------------------------------
+ * Returns whether the Compound's divider is 0
+ */
     bool getDivided();
+/*
+ * Method: getDefined
+ * Usage: bool defined=((CompoundExp *) exp)->getDefined();
+ * ------------------------------------------------------------
+ * Returns whether the Identifier in Compound is defined
+ */
     bool getDefined();
+/*
+ * Method: modifyIf
+ * Usage: ((CompoundExp *) exp)->modifyIf();
+ * ------------------------------------------------------------
+ * Change the if_defined in CompoundExp class to know next Compound is behind IF
+ */
     void modifyIf();
+
 private:
 
     std::string op;
     Expression *lhs, *rhs;
-    bool divided=0;
-    bool compound_defined=0;
-    bool if_defined=0;
+    bool divided = 0;
+    bool compound_defined = 0;
+    bool if_defined = 0;
 };
 
 #endif

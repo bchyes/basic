@@ -75,20 +75,4 @@ public:
  * an Expression object), the class implementation must also
  * specify its own destructor method to free that memory.
  */
-/*class NumberedState :public Statement{
-public:
-    NumberedState(int token);
-    virtual void execute(EvalState &state);
-private:
-    int num;
-};*/
-class WordState :public Statement{
-public:
-    WordState(string token,int num,string line);
-    void execute(EvalState &state) override;
-
-private:
-    string op;
-    string infor;
-};
 #endif
