@@ -105,7 +105,7 @@ public:
  * exists, the memory for that statement is reclaimed.
  */
 
-    //void setParsedStatement(int lineNumber, Statement *stmt);
+    void setParsedStatement(int lineNumber, Statement *stmt);
 
 /*
  * Method: getParsedStatement
@@ -116,7 +116,7 @@ public:
  * returns NULL.
  */
 
-    //Statement *getParsedStatement(int lineNumber);
+    Statement *getParsedStatement(int lineNumber);
 
 /*
  * Method: getFirstLineNumber
@@ -157,10 +157,10 @@ private:
 struct Information{
     string line;
 };
-// Fill this in with whatever types and instance variables you need
 map<int,Information> line_information; //use for storage line and its information
 map<int,Information>::iterator it;
-
+map<int,Statement *> line_parsed;
+map<int,Statement *>::iterator it_;
 };
 
 #endif

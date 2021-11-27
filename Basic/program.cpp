@@ -26,43 +26,80 @@ Program::~Program() {
 }
 
 void Program::clear() {
-    // Replace this stub with your own code
-    //for (it=line_information.begin();it!=line_information.end();it++){
-    //    line_information.erase(it);
-    //}
     line_information.clear();
+    line_parsed.clear();
 }
 
 void Program::addSourceLine(int lineNumber, string line) {
-    // Replace this stub with your own code
     Information Infor;
     Infor.line = line;
     line_information[lineNumber] = Infor;
+    line_parsed[lineNumber] = getParsedStatement(lineNumber);
 }
 
 void Program::removeSourceLine(int lineNumber) {
-    // Replace this stub with your own code
     line_information.erase(lineNumber);
+    delete line_parsed[lineNumber];
+    line_parsed.erase(lineNumber);
 }
 
 string Program::getSourceLine(int lineNumber) {
-    return line_information[lineNumber].line;    // Replace this stub with your own code
+    return line_information[lineNumber].line;
 }
 
-//void Program::setParsedStatement(int lineNumber, Statement *stmt) {
-//    // Replace this stub with your own code
-//}
+void Program::setParsedStatement(int lineNumber, Statement *stmt) {
+    line_parsed[lineNumber] = stmt;
+}
 
-//Statement *Program::getParsedStatement(int lineNumber) {
-//    return NULL;  // Replace this stub with your own code
-//}
+Statement *Program::getParsedStatement(int lineNumber) {
+    Information infor = line_information[lineNumber];
+    TokenScanner scan;
+    scan.ignoreWhitespace();
+    scan.scanNumbers();
+    scan.setInput(infor.line);
+    string op = scan.nextToken();
+    if (op == "LET") {
+        Expression *exp = parseExp(scan);
+        Statement *stmt = new Letstate(exp);
+        return stmt;
+    } else if (op == "PRINT") {
+        Expression *exp = parseExp(scan);
+        Statement *stmt = new Printstate(exp);
+        return stmt;
+    } else if (op == "INPUT") {
+        string Iden = scan.nextToken();
+        Statement *stmt = new Inputstate(Iden);
+        return stmt;
+    } else if (op == "END") {
+        Statement *stmt = new Endstate();
+        return stmt;
+    } else if (op == "GOTO") {
+        Expression *exp = parseExp(scan);
+        Statement *stmt = new Gotostate(exp);
+        return stmt;
+    } else if (op == "IF") {
+        infor.line = infor.line.substr(op.length() + 1);
+        for (int i = 0; i < infor.line.length(); i++)
+            if (infor.line[i] == 'T') {
+                op = infor.line.substr(0, i - 1);
+                infor.line = infor.line.substr(i + 5);
+                break;
+            }
+        scan.setInput(op);
+        Expression *exp = parseExp(scan);
+        scan.setInput(infor.line);
+        Expression *exp_1 = parseExp(scan);
+        Statement *stmt = new Ifstate(exp, exp_1);
+        return stmt;
+    }
+}
 
 int Program::getFirstLineNumber() {
-    return (line_information.begin())->first;     // Replace this stub with your own code
+    return (line_information.begin())->first;
 }
 
 int Program::getNextLineNumber(int lineNumber) {
-    return (line_information.lower_bound(lineNumber))->first;     // Replace this stub with your own code
+    return (line_information.lower_bound(lineNumber))->first;
 }
 
 void Program::ListLine() {
@@ -72,102 +109,35 @@ void Program::ListLine() {
 }
 
 void Program::Run(EvalState &state) {
-    bool go=1;
-    for (it = line_information.begin();;) {
+    bool go = 1;
+    it = line_information.begin();
+    it_ = line_parsed.begin();
+    for (;;) {
         if (go) {
-            go=0;
+            go = 0;
+        } else {
+            it++;
+            it_++;
         }
-        else it++;
         if (it == line_information.end()) break;
-        Information infor = it->second;
-        TokenScanner scan;
-        scan.ignoreWhitespace();
-        scan.scanNumbers();
-        scan.setInput(infor.line);
-        string op = scan.nextToken();
-        if (op == "LET") {
-            Expression *exp = parseExp(scan);
-            exp->eval(state);
-            if (exp->getType() == COMPOUND)
-                if (((CompoundExp *) exp)->getDefined()) {
-                    cout << "VARIABLE NOT DEFINED" << "\n";
-                    return;
-                }
-        } else if (op == "PRINT") {
-            Expression *exp = parseExp(scan);
-            int value = exp->eval(state);
-            if (exp->getType() == IDENTIFIER)
-                if (((IdentifierExp *) exp)->getDefined()) {
-                    cout << "VARIABLE NOT DEFINED" << "\n";
-                    return;
-                }
-            if (!value) {
-                if (exp->getType() == COMPOUND)
-                    if (((CompoundExp *) exp)->getDivided()) {
-                        cout << "DIVIDE BY ZERO" << "\n";
-                        return;
-                    }
+        it_->second->execute(state);
+        if (it_->second->getType() == End) break;
+        else if (it_->second->getType() == Goto) {
+            int num = ((Gotostate *) (it_->second))->getNum();
+            if (!line_information.count(num)) cout << "LINE NUMBER ERROR" << "\n";
+            else {
+                it = line_information.find(num);
+                it_ = line_parsed.find(num);
+                go = 1;
             }
-            cout << value << "\n";
-        } else if (op == "INPUT") {
-            string input_num;
-            int flag = 1;
-            bool input_true=0;
-            input_num = getLine();
-            cout << " ? ";
-            while (1) {
-                if (input_num[0] == '-') {
-                    flag = -1;
-                    input_num = input_num.substr(1);
-                }
-                for (int i = 0; i < input_num.length(); i++) {
-                    if (input_num[i] < '0' || input_num[i] > '9') {
-                        cout << "INVALID NUMBER" << "\n";
-                        cout << " ? ";
-                        input_true=1;
-                        break;
-                    }
-                }
-                if (!input_true) break;
-                input_true=0;
+        } else if (it_->second->getType() == If) {
+            int num = ((Ifstate *) (it_->second))->getNum();
+            if (!line_information.count(num)) cout << "LINE NUMBER ERROR" << "\n";
+            else {
+                it = line_information.find(num);
+                it_ = line_parsed.find(num);
+                go = 1;
             }
-            state.setValue(scan.nextToken(), flag * stringToInteger(input_num));
-        } else if (op == "END") {
-            return;
-        } else if (op == "GOTO") {
-            Expression *exp = parseExp(scan);
-            if (exp->getType() == CONSTANT)
-                if (!line_information.count(((ConstantExp *) exp)->getValue())) cout << "LINE NUMBER ERROR" << "\n";
-                else {
-                    it = line_information.find(((ConstantExp *) exp)->getValue());
-                    go=1;
-                }
-        } else if (op == "IF") {
-            infor.line=infor.line.substr(op.length()+1);
-            for (int i=0;i<infor.line.length();i++)
-                if (infor.line[i]=='T'){
-                    op=infor.line.substr(0,i-1);
-                    infor.line=infor.line.substr(i+5);
-                    break;
-                }
-            TokenScanner scan_1;
-            scan_1.ignoreWhitespace();
-            scan_1.scanNumbers();
-            scan_1.setInput(op);
-            Expression *exp = parseExp(scan_1);
-            ((CompoundExp *)exp)->modifyIf();
-            int value=exp->eval(state);
-            if (value){
-                scan_1.setInput(infor.line);
-                Expression *exp = parseExp(scan_1);
-                if (exp->getType() == CONSTANT)
-                    if (!line_information.count(((ConstantExp *) exp)->getValue())) cout << "LINE NUMBER ERROR" << "\n";
-                    else {
-                        it = line_information.find(((ConstantExp *) exp)->getValue());
-                        go=1;
-                    }
-            }
-
         }
     }
 }
